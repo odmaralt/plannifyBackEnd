@@ -1,12 +1,17 @@
 const express = require("express");
 const connect = require("./db/db");
+const cors = require("cors");
 const userRoutes = require("./router/users");
 const app = express();
 const port = 9000;
-// const cronJob = require("./nodecron");
-const cors = require("cors");
+const cronJob = require("node-cron");
+const { restart } = require("./controller/restart");
+
+// const job = cronJob.schedule("0 0 0 * * *", function () {
+//   restart();
+// });
 app.use(cors());
-// app.use(cronJob);
+// app.use(job.start);
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");

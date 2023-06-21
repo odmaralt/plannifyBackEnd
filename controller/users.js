@@ -7,7 +7,7 @@ exports.getUsers = async (request, response, next) => {
     const users = await User.find().exec();
     response.status(200).json(users);
   } catch (error) {
-    next(error);
+    response.status(500).json({ error: err });
   }
 };
 exports.getUser = async (request, response, next) => {
@@ -34,6 +34,7 @@ exports.createUser = async (request, response, next) => {
       lastName: body.lastName,
       email: body.email,
       password: hashedPassword,
+      lastLogin: "",
     });
     const token = tokenGenerate(body.email, newUser._id);
     return response.status(201).json(newUser);

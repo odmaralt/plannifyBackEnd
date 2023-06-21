@@ -14,6 +14,7 @@ const userSchema = new Schema({
   },
   email: { type: String, required: [true, "Email is required"] },
   password: { type: String, required: true },
+  lastLogin: { type: String },
 });
 
 const UserModel = model("User", userSchema);

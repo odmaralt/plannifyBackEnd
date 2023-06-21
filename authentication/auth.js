@@ -1,4 +1,6 @@
 const { compareHash } = require("../bcrypt/bcrypt");
+const { restart } = require("../controller/restart");
+const { getDate } = require("../helper-functions/getDate");
 const UserModel = require("../models/userSchema");
 const { tokenGenerate } = require("./jwt");
 
@@ -21,7 +23,7 @@ module.exports.authRegister = async (req, res, next) => {
   }
 };
 module.exports.authLoginWithJwt = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, lastLogin } = req.body;
   const user = await UserModel.findOne({ email: email });
 
   if (!user) {
@@ -38,7 +40,19 @@ module.exports.authLoginWithJwt = async (req, res, next) => {
       message: "Invalid Password",
     });
   }
+  const currentLoginDate = lastLogin;
+  const lastLoginDate = user.lastLogin;
+  const isUserLoggedIn = getDate(currentLoginDate, lastLoginDate);
+  if (isUserLoggedIn) {
+    await restart(user._id);
+  }
+  await UserModel.findOneAndUpdate(
+    { _id: user._id },
+    { $set: { lastLogin: lastLogin } },
+    { new: true }
+  );
   const token = tokenGenerate(email, user._id);
+
   return res.status(200).json({
     success: true,
     data: {

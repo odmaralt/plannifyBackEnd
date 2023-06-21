@@ -10,7 +10,7 @@ const waterSchema = new Schema(
     },
     cupsTotal: {
       type: String,
-      required: [true, "Cups drank is required"],
+      // required: [true, "Cups drank is required"],
       minLength: [1, "Input must be at least 1 characters"],
       maxLength: [2, "Input must no more than 2 characters"],
     },
